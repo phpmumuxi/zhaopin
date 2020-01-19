@@ -1,0 +1,151 @@
+<include file="public:header"/>
+
+<form action="{:U('Company/edit_company')}" method="post" name="FormData" id="FormData" >
+    <div class="toptit link_blue">
+        修改企业资料 - <span style="color:#0066CC">{$info.companyname}</span>
+        (会员名：{$info.user.username}，注册时间：{$info['addtime']|date="Y-m-d",###})
+    </div>
+    <div class="form_main width120">
+        <div class="fl">添加方式:</div>
+        <div class="fr txt">
+            <if condition="$info['robot'] eq '0'">人工注册</if>
+            <if condition="$info['robot'] eq '1'">采集</if>
+        </div>
+        <div class="fl">营业执照:</div>
+        <div class="fr txt link_blue">
+            <if condition="$info['certificate_img']">
+                <a href="{:attach($info['certificate_img'],'certificate_img')}" target="_blank" title="点击查看"> 已上传</a>
+            <else />
+                未上传
+            </if>
+        </div>
+        <div class="fl">认证状态:</div>
+        <div class="fr">
+            <div class="imgradio">
+                <input name="audit" type="hidden" value="{$info['audit']}">
+                <div class="radio <eq name='info.audit' value='1'>select</eq>" data="1">认证通过</div>
+                <div class="radio <eq name='info.audit' value='2'>select</eq>" data="2">等待认证</div>
+                <div class="radio <eq name='info.audit' value='3'>select</eq>" data="3">认证未通过</div>
+                <div class="radio <eq name='info.audit' value='0'>select</eq>" data="0">未认证</div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="fl"><span style="color:#FF3300; font-weight:bold">*</span> 公司名称:</div>
+        <div class="fr">
+            <input name="companyname" type="text" class="input_text_default" maxlength="30" value="{$info.companyname}"/>
+        </div>
+        <div class="fl"><span style="color:#FF3300; font-weight:bold">*</span> 企业性质:</div>
+        <div class="fr">
+            <div class="imgradio J_company_nature">
+                <input name="nature" type="hidden" value="{$info['nature']}">
+                <input name="nature_cn" type="hidden" value="{$info.nature_cn}" id="nature_cn"/>
+                <volist name="category['QS_company_type']" id="nature">
+                    <div class="radio <eq name='info.nature' value='$key'>select</eq>" data="{$key}" title="{$nature}">{$nature}</div>
+                </volist>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="fl"><span style="color:#FF3300; font-weight:bold">*</span> 所属行业:</div>
+        <div class="fr">
+            <input name="trade_cn" id="trade_cn" type="text" class="input_text_default arrow J_resuletitle_trade" value="{$info['trade_cn']|default='请选择所属行业'}" readonly="readonly" data-title="请选择所属行业" data-multiple="false" data-maxnum="0" data-width="682"/>
+            <input class="J_resultcode_trade" name="trade" id="trade" type="hidden" value="{$info['trade']}" />
+        </div>
+        <div class="fl"><span style="color:#FF3300; font-weight:bold">*</span> 所在地区:</div>
+        <div class="fr">
+            <input name="category_cn" id="district_cn" type="text" class="input_text_default arrow J_resuletitle_city" value="{$info['district_cn']|default='请选择工作地区'}" readonly="readonly" data-title="请选择工作地区" data-multiple="false" data-maxnum="0" <if condition="C('qscms_category_district_level') gt 2">data-width="667"<else/>data-width="520"</if> data-category="{:C('qscms_category_district_level')}"/>
+            <input class="J_resultcode_city" name="districtcategory" id="districtcategory" type="hidden" value="{$info['district']}.{$info['sdistrict']}.{$info['tdistrict']}" />
+        </div>
+        <div class="fl"><span style="color:#FF3300; font-weight:bold">*</span> 公司规模:</div>
+        <div class="fr">
+            <div class="imgradio J_company_scale">
+                <input name="scale" type="hidden" value="{$info['scale']}">
+                <input name="scale_cn" type="hidden" value="{$info.scale_cn}" id="scale_cn"/>
+                <volist name="category['QS_scale']" id="scale">
+                    <div class="radio <eq name='info.scale' value='$key'>select</eq>" data="{$key}" title="{$scale}">{$scale}</div>
+                </volist>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="fl">注册资金:</div>
+        <div class="fr">
+            <div style="float: left;">
+                <input name="registered" type="text" class="input_text_default" maxlength="5" value="{$info['registered']}" style="width: 100px;" onKeyUp="if(event.keyCode !=37 && event.keyCode != 39) value=value.replace(/\D/g,'');"onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/\D/g,''))"/> 万
+            </div>
+            <div class="imgradio" style="float: left; margin-left: 20px;">
+                <input name="currency" type="hidden" value="{$info['currency']|default='万人民币'}">
+                <div class="radio <neq name='info.currency' value='万美元'>select</neq>" data="万人民币" title="万人民币">人民币</div>
+                <div class="radio <eq name='info.currency' value='万美元'>select</eq>" data="万美元" title="万美元">美元</div>
+                <div class="clear"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="fl">企业福利:</div>
+        <div class="fr">
+            <input name="tag_cn" id="tag_cn" type="text" class="input_text_default arrow J_resuletitle_jobtag" value="{$tagStr['cn']|default='请选择企业福利'}" readonly="readonly" data-title="请选择企业福利" data-multiple="true" data-maxnum="6" data-width="582"/>
+            <input class="J_resultcode_jobtag" name="tag" id="tag" type="hidden" value="{$tagStr['id']}" />
+        </div>
+        <div class="fl"><span style="color:#FF3300; font-weight:bold">*</span> 联 系 人:</div>
+        <div class="fr">
+            <input name="contact" type="text" class="input_text_default middle" maxlength="15" value="{$info.contact}"/>
+            <label><input name="contact_show" type="checkbox" value="1" <if condition="$info['contact_show'] eq 1">checked="checked"</if> />对外公开</label>
+        </div>
+        <div class="fl"><span style="color:#FF3300; font-weight:bold">*</span> 联系电话:</div>
+        <div class="fr">
+            <input name="telephone" type="text" class="input_text_default middle" maxlength="11" value="{$info.telephone}" onKeyUp="if(event.keyCode !=37 && event.keyCode != 39) value=value.replace(/\D/g,'');"onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/\D/g,''))"/>
+            <label><input name="telephone_show" type="checkbox" value="1" <if condition="$info['telephone_show'] eq 1">checked="checked"</if> />对外公开</label>
+        </div>
+        <div class="fl">&nbsp;</div>
+        <div class="fr">
+            <input name="landline_tel_first" type="text" class="input_text_default" maxlength="4" value="{$info['landline_tel_first']}" style="width: 70px;" onKeyUp="if(event.keyCode !=37 && event.keyCode != 39) value=value.replace(/\D/g,'');"onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/\D/g,''))"/> -
+            <input name="landline_tel_next" type="text" class="input_text_default" maxlength="11" value="{$info['landline_tel_next']}" style="width: 207px;" onKeyUp="if(event.keyCode !=37 && event.keyCode != 39) value=value.replace(/\D/g,'');"onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/\D/g,''))"/> -
+            <input name="landline_tel_last" type="text" class="input_text_default" maxlength="6" value="{$info['landline_tel_last']}" style="width: 70px;" onKeyUp="if(event.keyCode !=37 && event.keyCode != 39) value=value.replace(/\D/g,'');"onbeforepaste="clipboardData.setData('text',clipboardData.getData('text').replace(/\D/g,''))"/>
+            <label><input name="landline_tel_show" type="checkbox" value="1" <if condition="$info['landline_tel_show'] eq 1">checked="checked"</if> />对外公开</label>
+        </div>
+        <div class="fl"><span style="color:#FF3300; font-weight:bold">*</span> 联系邮箱:</div>
+        <div class="fr">
+            <input name="email" type="text" class="input_text_default middle" maxlength="50" value="{$info.email}"/>
+            <label><input name="email_show" type="checkbox" value="1" <if condition="$info['email_show'] eq 1">checked="checked"</if>/>对外公开</label>
+        </div>
+        <div class="fl">公司网址:</div>
+        <div class="fr">
+            <input name="website" type="text" class="input_text_default middle" maxlength="80" value="{$info.website}"/>
+        </div>
+        <div class="fl"><span style="color:#FF3300; font-weight:bold">*</span> 联系地址:</div>
+        <div class="fr">
+            <input name="address" type="text" class="input_text_default middle" maxlength="50" value="{$info.address}"/>
+        </div>
+        <div class="fl"><span style="color:#FF3300; font-weight:bold">*</span> 公司介绍:</div>
+        <div class="fr">
+            <textarea id="contents" name="contents" class="input_text_default" style="line-height:200%; height:150px;" onpropertychange="if(this.value.length&gt;2000){this.value=this.value.slice(0,2000)}">{$info.contents}</textarea>
+            <div style="color: #999999; padding-top: 10px;">请将字数控制在2000字以内。</div>
+        </div>
+        <div class="fl"></div>
+        <div class="fr">
+            <input type="hidden" name="id"  value="{$info.id}" />
+            <input type="hidden" name="uid"  value="{$info.uid}" />
+            <input type="hidden" name="_k_v" value="{$Think.get._k_v}">
+            <input type="submit" class="admin_submit" value="保存修改"/>
+            <input type="button" class="admin_submit" value="返回" onClick="history.go(-1)"/>
+        </div>
+        <div class="clear"></div>
+    </div>
+</form>
+
+</div>
+<include file="public:footer"/>
+<qscms:load type="category"/>
+<script type="text/javascript" src="../public/js/jquery.modal.userselectlayer.js"></script>
+</body>
+<script type="text/javascript">
+    $(document).ready(function () {
+        // 公司性质cn
+        $(".J_company_nature .radio").live('click',function(){
+            $("#nature_cn").val($(this).attr("title"));
+        });
+        // 公司规模cn
+        $(".J_company_scale .radio").live('click',function(){
+            $("#scale_cn").val($(this).attr("title"));
+        });
+    });
+</script>
+</html>

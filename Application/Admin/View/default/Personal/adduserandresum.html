@@ -1,0 +1,21 @@
+<head>
+<title>请插入要导入的简历信息</title>
+<link rel="stylesheet" type="text/css" />
+<style type="text/css">
+.demo{width:400px; height:100px; margin:100px auto}
+.demo p{line-height:32px}
+</style>
+</head>
+<body>
+
+
+
+
+      <form  action="{:U('appserver/adduser')}" enctype="multipart/form-data" method="post">
+         <p>请选择要导入的CSV文件：<br/><input type="file" name="excel" accept="application/vnd.ms-excel"> <input type="submit" class="btn" value="导入表格">
+ 
+      </form>
+
+
+
+</body>

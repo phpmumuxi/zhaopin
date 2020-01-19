@@ -1,0 +1,94 @@
+<include file="public:header" />
+<div class="list_th">
+    <div class="td" style="width:52%;"><label class="left_padding">应用名称</label></div>
+    <div class="td" style="width:16%;">当前版本号</div>
+    <div class="td center" style="width:15%;">安装时间</div>
+    <div class="td center" style="width:15%;">操作</div>
+    <div class="clear"></div>
+</div>
+<div class="list_tr apply link_black J_mod" m="{$base.module}" v="{$base.version.version}">
+	<div class="td apply_list" style="width:50%;">
+		<a class="ico" href="{:U('apply/details',array('mod'=>$base['module']))}">
+			<img src="{$base.ico}">
+		</a>
+		<div class="info">
+			<p><a class="title" href="{:U('apply/details',array('mod'=>$base['module']))}">{$base.version.module_name}({$base.module})</a></p>
+			<p>{$base.version.explain}</p>
+		</div>
+	</div>
+    <div class="td apply_list" style="width:17%;">
+    	<p style="margin-top: 5px;">版本号：{$base.version.version}</p>
+		<p>更新时间：{$base.version.update_time}</p>
+    </div>
+    <div class="td center apply_list" style="width:11%; color: #999999;">{:date("Y-m-d H:i",$base['setup_time'])}</div>
+    <div class="td apply_list edit" style="width:17%;">
+		<a href="{:U('apply/details',array('mod'=>$base['module']))}" >详情</a>
+    	<if condition="$Think.APP_UPDATER">
+			<a class="J_updater orange" href="{:U('apply/updater',array('mod'=>$base['module']))}" >升级</a>
+			<eq name="base['enable_rollback']" value="1">
+			<a class="J_rollback" href="{:U('apply/rollback',array('mod'=>$base['module']))}" >回滚</a>
+			</eq>
+		</if>
+    </div>
+    <div class="clear"></div>
+</div>
+<volist name="list" id="list">
+	<div class="list_tr apply link_black J_mod" m="{$list.module}" v="{$list.version.version}">
+		<div class="td apply_list" style="width:50%;">
+			<a class="ico" href="{:U('apply/details',array('mod'=>$list['module']))}">
+				<img src="{$list.ico}">
+			</a>
+			<div class="info">
+				<p><a class="title" href="{:U('apply/details',array('mod'=>$list['module']))}">{$list.version.module_name}</a>（{$list.module}）</p>
+				<p>{$list.version.explain}</p>
+			</div>
+		</div>
+	    <div class="td apply_list" style="width:17%;">
+	    	<p style="margin-top: 5px;">版本号：{$list.version.version}</p>
+			<p>更新时间：{$list.version.update_time}</p>
+	    </div>
+	    <div class="td center apply_list" style="width:11%;color: #999999;">
+			<if condition="$list['is_setup'] neq 0">{:date("Y-m-d H:i",$list['setup_time'])}<else/><span style="color: #FF0000;">未安装</span></if>
+		</div>
+	    <div class="td apply_list edit" style="width:17%;">
+			<a href="{:U('apply/details',array('mod'=>$list['module']))}" >详情</a>
+	    	<if condition="$list['is_setup'] eq 0">
+				<a href="{:U('apply/setup',array('mod'=>$list['module']))}" >安装</a>
+			</if>
+			<if condition="$Think.APP_UPDATER">
+				<if condition="$apply[$list['module']]">
+					<a class="J_updater orange" href="{:U('apply/updater',array('mod'=>$list['module']))}" >升级</a>
+				</if>
+				<eq name="list['enable_rollback']" value="1">
+				<a class="J_rollback" href="{:U('apply/rollback',array('mod'=>$list['module']))}" >回滚</a>&nbsp;
+				</eq>
+			</if>
+	    	<if condition="$list['is_setup'] neq 0">
+				<a href="{:U('apply/unload',array('mod'=>$list['module']))}" class="gray">卸载</a>
+			</if>
+	    </div>
+	    <div class="clear"></div>
+	</div>
+</volist>
+<div class="pages">{$page}</div>
+</div>
+<include file="public:footer" />
+<script type="text/javascript">
+	function callback(a){
+		$.each(a.data,function(k,v){
+			var version = $('.J_mod[m="'+k+'"]').attr('v'),h='';
+			if(v.version){
+				if(version != v.version){
+					v.update_time = v.update_time ? v.update_time : '未发布';
+					$('.J_mod[m="'+k+'"] .J_v').append('<a href="http://www.74cms.com/app/list-1.html" target="_blank" class="newsv">有新版</a>');
+					$('.J_mod[m="'+k+'"] .J_t').html(v.update_time);
+				}else{
+					$('.J_mod[m="'+k+'"] .J_updater').replaceWith('<a class="gray">升级</a>');
+				}
+			}
+		});
+	}
+</script>
+<script src="http://www.74cms.com/plus/check_module.php?module_name={$module_name}" language="javascript"></script>
+</body>
+</html>
